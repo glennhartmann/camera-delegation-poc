@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2025 The Chromium Authors
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+
+<!--
+  Based on
+  https://source.chromium.org/chromium/chromium/src/+/main:chrome/android/webapk/shell_apk/res/values-night-v31/styles.xml
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="PermissionRequestTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+</resources>
