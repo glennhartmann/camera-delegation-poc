@@ -9,6 +9,13 @@ doesn't get recorded by the system as having accessed the camera.
 The "Server" app requires the user to grant it permissions, and gets recorded as
 having accessed the camera.
 
+Note that this branch is the "full" (though still far from productionized)
+version of the apps. There's also a [minimized
+branch](https://github.com/glennhartmann/camera-delegation-poc/tree/minimized)
+that cuts a lot more corners and has easier-to-follow code, focusing more
+directly on camera delegation and less on synchronizing, avoiding crashes, and
+correctness in general.
+
 ## Building and Installing
 
 This is an [Android Studio](https://developer.android.com/studio) project
