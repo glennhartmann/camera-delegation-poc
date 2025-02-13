@@ -5,7 +5,6 @@
 package dev.hartmanng.server;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
@@ -22,15 +21,12 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 
 public class CameraManager implements Executor {
     private static final String TAG = "Server.CameraManager";
 
-    private HandlerThread mHandlerThread;
     private Handler mHandler;
     private final Surface mSurface;
-    private android.hardware.camera2.CameraManager mCameraManager;
 
     private final CameraDevice.StateCallback mCameraDeviceStateCallback =
             new CameraDevice.StateCallback() {
@@ -61,10 +57,7 @@ public class CameraManager implements Executor {
 
                     CaptureRequest.Builder captureRequestBuilder =
                             attemptCreateCaptureRequestBuilder(cameraCaptureSession);
-                    if (captureRequestBuilder == null) {
-                        // This was already logged in attemptCreateCaptureRequestBuilder().
-                        return;
-                    }
+                    assert captureRequestBuilder != null;
 
                     captureRequestBuilder.addTarget(mSurface);
                     attemptSetRepeatingRequest(cameraCaptureSession, captureRequestBuilder.build());
@@ -81,13 +74,13 @@ public class CameraManager implements Executor {
     }
 
     public void connect(Context applicationContext) {
-        mCameraManager =
+        android.hardware.camera2.CameraManager cameraManager =
                 (android.hardware.camera2.CameraManager) applicationContext.getSystemService(
                         Context.CAMERA_SERVICE);
 
         String[] cameraIds;
         try {
-            cameraIds = mCameraManager.getCameraIdList();
+            cameraIds = cameraManager.getCameraIdList();
         } catch (CameraAccessException e) {
             Log.e(TAG, "camera access exception: " + e);
             return;
@@ -98,24 +91,20 @@ public class CameraManager implements Executor {
             return;
         }
 
-        mHandlerThread = new HandlerThread("CameraThread");
-        mHandlerThread.start();
-        mHandler = new Handler(mHandlerThread.getLooper());
-
-        if (ActivityCompat.checkSelfPermission(applicationContext,
-                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "camera permission not granted");
-            return;
-        }
+        HandlerThread handlerThread = new HandlerThread("CameraThread");
+        handlerThread.start();
+        mHandler = new Handler(handlerThread.getLooper());
 
         try {
             // Obviously there are better ways to select a camera than just picking the first one.
             // But this is good enough for demo purposes.
-            mCameraManager.openCamera(cameraIds[0],
+            cameraManager.openCamera(cameraIds[0],
                     mCameraDeviceStateCallback,
                     mHandler);
         } catch (CameraAccessException e) {
             Log.e(TAG, "connect(): camera access exception: " + e);
+        } catch (SecurityException e) {
+            Log.e(TAG, "connect(): security exception: " + e);
         }
     }
 

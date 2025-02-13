@@ -30,10 +30,16 @@
             android:text="Bind Service" />
 
         <Button
-            android:id="@+id/requestPermissionsButton"
+            android:id="@+id/requestNotificationPermissionButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Request Permissions" />
+            android:text="Request Notification Permission" />
+
+        <Button
+            android:id="@+id/requestCameraPermissionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Request Camera Permission" />
 
         <Button
             android:id="@+id/startForegroundServiceButton"
@@ -46,12 +52,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delegate Camera" />
-
-        <Button
-            android:id="@+id/unbindServiceButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Unbind Service" />
 
         <VideoView
             android:id="@+id/videoView"

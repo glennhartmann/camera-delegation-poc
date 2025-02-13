@@ -21,9 +21,6 @@ public class PermissionRequestActivity extends Activity {
     private static final String TAG = "Server.PermissionRequestActivity";
 
     public static final String EXTRA_PERMISSION = "permission";
-    public static final String EXTRA_CALLBACK = "callback";
-
-    private PendingIntent mPendingIntent = null;
 
     public static PendingIntent getPendingIntent(Context applicationContext, String permission) {
         Intent intent = new Intent(applicationContext, PermissionRequestActivity.class);
@@ -40,26 +37,8 @@ public class PermissionRequestActivity extends Activity {
 
         Log.i(TAG, "PermissionRequestActivity.onCreate()");
 
-        String permission = getIntent().getStringExtra(EXTRA_PERMISSION);
-        if (permission == null) {
-            Log.e(TAG, "EXTRA_PERMISSION missing on intent");
-            finish();
-            return;
-        }
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            mPendingIntent = getIntent().getParcelableExtra(EXTRA_CALLBACK, PendingIntent.class);
-        } else {
-            mPendingIntent = getIntent().getParcelableExtra(EXTRA_CALLBACK);
-        }
-
-        if (mPendingIntent == null) {
-            Log.i(TAG, "got null PendingIntent");
-        } else {
-            Log.i(TAG, "got non-null PendingIntent");
-        }
-
-        ActivityCompat.requestPermissions(this /* activity */, new String[]{permission},
+        ActivityCompat.requestPermissions(this /* activity */,
+                new String[]{getIntent().getStringExtra(EXTRA_PERMISSION) /* assume non-null */},
                 0 /* requestCode */);
     }
 
@@ -82,13 +61,5 @@ public class PermissionRequestActivity extends Activity {
         super.onStop();
 
         Log.i(TAG, "PermissionRequestActivity.onStop()");
-
-        if (mPendingIntent != null) {
-            try {
-                mPendingIntent.send();
-            } catch (PendingIntent.CanceledException e) {
-                Log.e(TAG, "PendingIntent canceled: " + e);
-            }
-        }
     }
 }
